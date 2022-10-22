@@ -1,0 +1,12 @@
+FROM python:3.8-slim
+# copy local python scripts into container
+WORKDIR /docker
+COPY wait-for-it.sh /docker/wait-for-it.sh
+COPY . /docker
+RUN chmod +x /docker/wait-for-it.sh
+ADD controller.py requirements.txt /docker/
+RUN pip install -r /docker/requirements.txt
+CMD ["/docker/wait-for-it.sh","main_rabbit:5672", "--", "python", "-u", "/docker/controller.py"]
+
+
+

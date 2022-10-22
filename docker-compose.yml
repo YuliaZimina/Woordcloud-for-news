@@ -1,0 +1,42 @@
+version: '3'
+services:
+  main_rabbit:
+    image: "rabbitmq:3-management"
+    ports:
+     - "5672:5672"
+     - "15672:15672"
+  controller:
+    build:
+      context: .
+      dockerfile: rabbit1_df
+    depends_on:
+     - main_rabbit
+     - db
+    links:
+      - db
+    ports:
+      - "5000:5000"
+  news:
+    build:
+      context: .
+      dockerfile: rabbit2_df
+    depends_on:
+     - main_rabbit
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=2581211c
+      - POSTGRES_DB=wordcloud
+    volumes:
+        - ./ .database/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
