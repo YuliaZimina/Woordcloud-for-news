@@ -128,6 +128,7 @@ def images():
     base = url_for('static', filename='images')
     if request.method == 'POST' or request.method == 'GET':
         global date
+        global exeption_flag
         date = request.form.get('datetime')
         try:
             datetime.strptime(date, '%Y-%m-%d')
